@@ -5,6 +5,7 @@ const getProducts = async () => {
     let products = [];
     if (response.ok) {
         products = await response.json(); 
+        console.log(products)
     } 
     return products;
 }

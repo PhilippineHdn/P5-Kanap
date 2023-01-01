@@ -1,19 +1,16 @@
 import cartTemplate from "./templates/cartTemplate.js";
 import * as regex from "./regex.js";
 
-
 const response = await fetch('http://localhost:3000/api/products');
 let products = [];
 if (response.ok) {
     products = await response.json();
 }
 
-
 const removeSofaInLocalStorage = (sofaId, sofaColor) => {
     localStorage.setItem('sofas', JSON.stringify(JSON.parse(localStorage.getItem('sofas')).filter(sofa => 
         sofa.id !== sofaId && sofa.color !== sofaColor )));
 }
-
 
 const updateSofaInLocalStorage = (sofa) => {
     localStorage.setItem('sofas', JSON.stringify(JSON.parse(localStorage.getItem('sofas')).map(item => {
@@ -51,7 +48,6 @@ const onChangeSofaQuantity = (event) => {
 }
 
 const updateSums = (products) => {
-
     const sums = products.reduce((acc, cur) => {
         acc.qty += Number(cur.qty)
         acc.price += Number(cur.price) * Number(cur.qty)
@@ -63,7 +59,7 @@ const updateSums = (products) => {
 }
 
 const displayCart = async () => {
-    const productInLocalStorage = JSON.parse(localStorage.getItem('sofas'));
+    const productInLocalStorage = JSON.parse(localStorage.getItem('sofas')) || [];
     const enrichedProductInLocalStorage = productInLocalStorage.map(product => ( {
         ...product, 
         ...products.find(item => item._id === product.id)
@@ -75,7 +71,6 @@ const displayCart = async () => {
     } else {
         const cartItems = document.getElementById('cart__items');
         for (const product of enrichedProductInLocalStorage) {
-
             const cartItem = document.createElement('article');
             cartItem.classList.add('cart__item');
             cartItem.setAttribute('data-id', product.id);
@@ -140,7 +135,8 @@ emailElement.addEventListener('focusout', (event) => {
         : "Email invalide !";
 })
 
-document.getElementById('order').addEventListener('click', () => {
+document.getElementById('order').addEventListener('click', async (event) => {
+    event.preventDefault();
     let isEverythingOkay = true;
 
     if (!regex.validateFirstName(firstNameElement.value)) {
@@ -148,22 +144,22 @@ document.getElementById('order').addEventListener('click', () => {
         isEverythingOkay = false;
     }
 
-    if (!regex.validateFirstName(lastNameElement.value)) {
+    if (!regex.validateLastName(lastNameElement.value)) {
         document.getElementById('lastNameErrorMsg').innerText = "Nom invalide !"
         isEverythingOkay = false;
     }
 
-    if (!regex.validateFirstName(addressElement.value)) {
+    if (!regex.validateAddress(addressElement.value)) {
         document.getElementById('addressErrorMsg').innerText = "Adresse invalide !"
         isEverythingOkay = false;
     }
 
-    if (!regex.validateFirstName(cityElement.value)) {
+    if (!regex.validateCity(cityElement.value)) {
         document.getElementById('cityErrorMsg').innerText = "Ville invalide !"
         isEverythingOkay = false;
     }
 
-    if (!regex.validateFirstName(emailElement.value)) {
+    if (!regex.validateEmail(emailElement.value)) {
         document.getElementById('emailErrorMsg').innerText = "Email invalide !"
         isEverythingOkay = false;
     }
@@ -177,8 +173,22 @@ document.getElementById('order').addEventListener('click', () => {
             email : emailElement.value,
         };
 
-        const productIds = JSON.parse(localStorage.getItem('sofas')).map(item => item._id);
-
+        const productIds = JSON.parse(localStorage.getItem('sofas')).map(item => item.id);
+        try {
+            const responseOrder = await fetch('http://localhost:3000/api/products/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({contact, products: productIds })
+            });
+            if (responseOrder.ok) {
+                const orderId = (await responseOrder.json()).orderId;
+                location.href = `./confirmation.html?orderId=${orderId}`;
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
 

@@ -1,29 +1,33 @@
-const regexFirstName = /^[a-zA-Z]+$/;
-const regexLastName = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/;
-const regexAddress = /^[a-zA-Z0-9\s,'-]*$/;
-const regexCity = /^[a-zA-Z\s]+$/;
-const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-
-
-const validateFirstName = (name) => regexFirstName.test(name);
-
-const validateLastName = (name) => regexLastName.test(name);
-
-const validateAddress = (address) => regexAddress.test(address);
-
-const validateCity = (city) => regexCity.test(city);
-
-const validateEmail = (email) => regexEmail.test(email);
-
-export {
-    validateFirstName,
-    validateLastName,
-    validateAddress,
-    validateCity,
-    validateEmail,
+const REGEX = {
+    FIRST_NAME: /^[a-zA-Z]+$/,
+    LAST_NAME: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+    ADDRESS: /^[a-zA-Z0-9\s,'-]*$/,
+    CITY: /^[a-zA-Z\s]+$/,
+    EMAIL: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 }
 
+export default class regexValidator {
+    static firstName(firstName) { 
+        return REGEX.FIRST_NAME.test(firstName)
+    }
+    static lastName(lastName) { 
+        return REGEX.LAST_NAME.test(lastName)
+    }
+    static address(address) { 
+        return REGEX.ADDRESS.test(address)
+    }
+    static city(city) { 
+        return REGEX.CITY.test(city)
+    }
+    static email(email) { 
+        return REGEX.EMAIL.test(email)
+    }
+}
 
+// const myValidator = new regexValidator()
+// myValidator.validateFirstName('philippine')
+
+// regexValidator.validateFirstName()
 
 
 

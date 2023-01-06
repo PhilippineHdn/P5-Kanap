@@ -1,5 +1,5 @@
 import cartTemplate from "./templates/cartTemplate.js";
-import * as regex from "./regex.js";
+import regex from "./regex.js";
 
 const response = await fetch('http://localhost:3000/api/products');
 let products = [];
@@ -95,83 +95,35 @@ const displayCart = async () => {
 
 displayCart();
 
-const firstNameElement = document.getElementById('firstName')
-firstNameElement.addEventListener('focusout', (event) => {
-    const firstNameValue = event.target.value;
-    document.getElementById('firstNameErrorMsg').innerText = regex.validateFirstName(firstNameValue) 
-        ? '' 
-        : "Prénom invalide !";
-})
+const formErrorsLabel = {
+    firstName: 'Prénom invalide !', 
+    lastName: 'Nom invalide !',
+    address: 'Adresse invalide !',
+    city: 'Ville invalide !',
+    email: 'Email invalide !'
+};
 
-const lastNameElement = document.getElementById('lastName')
-lastNameElement.addEventListener('focusout', (event) => {
-    const lastNameValue = event.target.value;
-    document.getElementById('lastNameErrorMsg').innerText = regex.validateLastName(lastNameValue) 
-        ? '' 
-        : "Nom invalide !";
-})
+let errors = {};
 
-const addressElement = document.getElementById('address')
-addressElement.addEventListener('focusout', (event) => {
-    const addressValue = event.target.value;
-    document.getElementById('addressErrorMsg').innerText = regex.validateAddress(addressValue) 
-        ? '' 
-        : "Adresse invalide !";
-})
+const initFocusOut = key => {
+     document.getElementById(key).addEventListener('focusout', (event) => {
+        console.log(key);
+        errors[key] = !regex[key](event.target?.value ?? '');
+        console.log(errors[key])
+        document.getElementById(`${key}ErrorMsg`).innerText = !errors[key]? '' : formErrorsLabel[key];
+     })
+}
 
-const cityElement = document.getElementById('city')
-cityElement.addEventListener('focusout', (event) => {
-    const cityValue = event.target.value;
-    document.getElementById('cityErrorMsg').innerText = regex.validateCity(cityValue) 
-        ? '' 
-        : "Ville invalide !";
-})
-
-const emailElement = document.getElementById('email')
-emailElement.addEventListener('focusout', (event) => {
-    const emailValue = event.target.value;
-    document.getElementById('emailErrorMsg').innerText = regex.validateEmail(emailValue) 
-        ? '' 
-        : "Email invalide !";
-})
+Object.keys(formErrorsLabel).forEach(key => {
+    errors[key] = true;
+    initFocusOut(key)
+});
 
 document.getElementById('order').addEventListener('click', async (event) => {
     event.preventDefault();
-    let isEverythingOkay = true;
-
-    if (!regex.validateFirstName(firstNameElement.value)) {
-        document.getElementById('firstNameErrorMsg').innerText = "Prénom invalide !"
-        isEverythingOkay = false;
-    }
-
-    if (!regex.validateLastName(lastNameElement.value)) {
-        document.getElementById('lastNameErrorMsg').innerText = "Nom invalide !"
-        isEverythingOkay = false;
-    }
-
-    if (!regex.validateAddress(addressElement.value)) {
-        document.getElementById('addressErrorMsg').innerText = "Adresse invalide !"
-        isEverythingOkay = false;
-    }
-
-    if (!regex.validateCity(cityElement.value)) {
-        document.getElementById('cityErrorMsg').innerText = "Ville invalide !"
-        isEverythingOkay = false;
-    }
-
-    if (!regex.validateEmail(emailElement.value)) {
-        document.getElementById('emailErrorMsg').innerText = "Email invalide !"
-        isEverythingOkay = false;
-    }
-
-    if (isEverythingOkay) {
-        const contact = {
-            firstName: firstNameElement.value,
-            lastName : lastNameElement.value,
-            address : addressElement.value,
-            city : cityElement.value,
-            email : emailElement.value,
-        };
+    if (Object.values(errors).every(value => value === false)) {
+        const contact = {};
+        Object.keys(errors).forEach(key => contact[key]= document.getElementById(key).value);
 
         const productIds = JSON.parse(localStorage.getItem('sofas')).map(item => item.id);
         try {

@@ -56,7 +56,7 @@ const updateSums = (products) => {
     document.getElementById('totalQuantity').innerHTML = sums.qty;
     document.getElementById('totalPrice').innerHTML = sums.price;
 
-    if (sums.qty == 1) {
+    if (sums.qty <= 1) {
         document.getElementById('article-label').innerText = " article";
     } else if (sums.qty > 1) { 
         document.getElementById('article-label').innerText = " articles";
@@ -128,7 +128,7 @@ Object.keys(formErrorsLabel).forEach(key => {
 });
 
 document.getElementById('order').addEventListener('click', async (event) => {
-   // event.preventDefault();
+    event.preventDefault();
     if (Object.values(errors).every(value => value === false)) {
         const contact = {};
         Object.keys(errors).forEach(key => contact[key]= document.getElementById(key).value);

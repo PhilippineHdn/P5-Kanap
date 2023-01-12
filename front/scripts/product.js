@@ -60,6 +60,10 @@ document.getElementById('addToCart').addEventListener("click", () => {
     }
 })
 
+document.getElementById('addToCart').addEventListener("mouseout", () => {
+    document.getElementById('addToCart').style.color = "white";
+})
+
 /* const sofas = [
     {
         id:'a',

@@ -4,9 +4,8 @@ const getProducts = async () => {
     const response = await fetch('http://localhost:3000/api/products');
     let products = [];
     if (response.ok) {
-        products = await response.json(); 
-        console.log(products)
-    } 
+        products = await response.json();
+    }
     return products;
 }
 

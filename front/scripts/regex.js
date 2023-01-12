@@ -1,8 +1,8 @@
 const REGEX = {
-    FIRST_NAME: /^[a-zA-Z]+$/,
-    LAST_NAME: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
-    ADDRESS: /^[a-zA-Z0-9\s,'-]*$/,
-    CITY: /^[a-zA-Z\s]+$/,
+    FIRST_NAME: /^[a-zA-Zéçàèùêïë]+$/,
+    LAST_NAME: /^[a-zA-Zéçàèùêïë]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+    ADDRESS: /^[a-zA-Zéçàèùêïë0-9\s,'-]*$/,
+    CITY: /^[a-zA-Zéçàèùêïë\s]+$/,
     EMAIL: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 }
 

@@ -56,6 +56,11 @@ const updateSums = (products) => {
     document.getElementById('totalQuantity').innerHTML = sums.qty;
     document.getElementById('totalPrice').innerHTML = sums.price;
 
+    if (sums.qty == 1) {
+        document.getElementById('article-label').innerText = " article";
+    } else if (sums.qty > 1) { 
+        document.getElementById('article-label').innerText = " articles";
+    }
 }
 
 const displayCart = async () => {
@@ -68,6 +73,9 @@ const displayCart = async () => {
         const emptyCartDiv = document.querySelector("#cart__items");
         const emptyCartSentence = 'Votre panier est vide';
         emptyCartDiv.innerText = emptyCartSentence;
+        document.getElementsByClassName('cart__price')[0].style.display = "none";
+        document.getElementsByClassName('cart__order')[0].style.display = "none";
+
     } else {
         const cartItems = document.getElementById('cart__items');
         for (const product of enrichedProductInLocalStorage) {
@@ -120,7 +128,7 @@ Object.keys(formErrorsLabel).forEach(key => {
 });
 
 document.getElementById('order').addEventListener('click', async (event) => {
-    event.preventDefault();
+   // event.preventDefault();
     if (Object.values(errors).every(value => value === false)) {
         const contact = {};
         Object.keys(errors).forEach(key => contact[key]= document.getElementById(key).value);
@@ -141,7 +149,5 @@ document.getElementById('order').addEventListener('click', async (event) => {
         } catch (error) {
             console.log(error)
         }
-    }
-
-
+    } else if (!Object.values(errors).every(value => value === false)) { alert("Vérifiez que tous les champs du formulaire soient corrects.") }
 })

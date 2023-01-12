@@ -42,11 +42,13 @@ document.getElementById('addToCart').addEventListener("click", () => {
     const colors = document.getElementById('colors');
     const quantityValue = document.getElementById('quantity').value;
 
-    if(!colors.value || quantityValue === 0) {
+    if(!colors.value || quantityValue == 0) {
         alert('Please choose a color and a quantity');
     } else {
         const localStorageSofas = localStorage.getItem('sofas');
         const parsedLocalStorageSofas = localStorageSofas ? JSON.parse(localStorageSofas) : [];
+
+        document.getElementById('addToCart').style.color = "green";
 
         const foundIndex = parsedLocalStorageSofas.findIndex(sofa => sofa.id === idProduct && sofa.color === colors.value);
         if(foundIndex === -1) {

@@ -1,5 +1,6 @@
 import productTemplate from "./templates/productTemplate.js";
 
+//call to the api to get the products of the catalog
 const getProducts = async () => {
     const response = await fetch('http://localhost:3000/api/products');
     let products = [];
@@ -9,6 +10,7 @@ const getProducts = async () => {
     return products;
 }
 
+//display a product on the page using a template
 const displayProductInDOM = (product) => {
     const newA = document.createElement("a");
     newA.href = `./product.html?id=${product._id}`;
@@ -22,6 +24,7 @@ const displayProductInDOM = (product) => {
     document.getElementById('items').appendChild(newA);
 }
 
+//loop to display the products received by the api in a dynamic way
 const getAndDisplayProducts = async () => {
     const products = await getProducts();
 

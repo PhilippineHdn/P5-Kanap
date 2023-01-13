@@ -24,9 +24,11 @@ export default class regexValidator {
     }
 }
 
+// line 28 & 29 to use when we use a non static class/method
 // const myValidator = new regexValidator()
 // myValidator.validateFirstName('philippine')
 
+//this line when it's a static class/method
 // regexValidator.validateFirstName()
 
 

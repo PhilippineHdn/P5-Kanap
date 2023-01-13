@@ -1,5 +1,7 @@
+//get the id of a product from the url
 const idProduct = new URLSearchParams(location.search).get('id');
 
+//display the information of the product concerned
 const getPost = (product) => {
     const productImg = document.createElement("img");
     productImg.src = product.imageUrl;
@@ -26,6 +28,7 @@ const getPost = (product) => {
     })
 }
 
+//call the api to receive product information
 const getArticle = async () => {
     const response = await fetch("http://localhost:3000/api/products/" + idProduct);
     let product = null;
@@ -37,6 +40,7 @@ const getArticle = async () => {
 
 getArticle();
 
+//when clicking on the "add to cart" button, add the product(s) to the cart using LocalStorage
 document.getElementById('addToCart').addEventListener("click", () => {
 
     const colors = document.getElementById('colors');

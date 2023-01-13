@@ -1,17 +1,22 @@
 import cartTemplate from "./templates/cartTemplate.js";
 import regex from "./regex.js";
 
+//call to the api to get the products of the catalog
 const response = await fetch('http://localhost:3000/api/products');
 let products = [];
 if (response.ok) {
     products = await response.json();
 }
 
+//remove a product from the localStorage
 const removeSofaInLocalStorage = (sofaId, sofaColor) => {
-    localStorage.setItem('sofas', JSON.stringify(JSON.parse(localStorage.getItem('sofas')).filter(sofa => 
-        sofa.id !== sofaId && sofa.color !== sofaColor )));
+    const newCart = JSON.stringify(JSON.parse(localStorage.getItem('sofas')).filter(sofa => 
+        sofa.id !== sofaId && sofa.color !== sofaColor ));
+    localStorage.setItem('sofas', newCart);
+    return JSON.parse(newCart);
 }
 
+//update the quantity of a product in the localStorage
 const updateSofaInLocalStorage = (sofa) => {
     localStorage.setItem('sofas', JSON.stringify(JSON.parse(localStorage.getItem('sofas')).map(item => {
         if (item.id === sofa.id && item.color === sofa.color) {
@@ -21,18 +26,23 @@ const updateSofaInLocalStorage = (sofa) => {
     })));
 }
 
+//remove a product from the page and the localStorage and update quantity and price line (with updateSums())
 const onClickDeleteSofa = (event) => {
     const cartItem = event.target.closest('.cart__item');
     const sofaId = cartItem.dataset.id;
     const sofaColor = cartItem.dataset.color;
-    removeSofaInLocalStorage(sofaId, sofaColor);
+    const newCart = removeSofaInLocalStorage(sofaId, sofaColor);
     cartItem.remove();
     updateSums(JSON.parse(localStorage.getItem('sofas')).map(product => ( {
         ...product, 
         ...products.find(item => item._id === product.id)
     })))
+    if (!newCart?.length) {
+        document.getElementsByClassName('cart__order')[0].style.display = "none";
+    };
 }
 
+//update the quantity of a product in the localStorage (with updateSofaInLocalStorage()) and update quantity and price line (with updateSums())
 const onChangeSofaQuantity = (event) => {
     const cartItem = event.target.closest('.cart__item');
     updateSofaInLocalStorage({
@@ -47,6 +57,7 @@ const onChangeSofaQuantity = (event) => {
 
 }
 
+//Update quantity and price total line
 const updateSums = (products) => {
     const sums = products.reduce((acc, cur) => {
         acc.qty += Number(cur.qty)
@@ -63,6 +74,7 @@ const updateSums = (products) => {
     }
 }
 
+//display the products in the cart
 const displayCart = async () => {
     const productInLocalStorage = JSON.parse(localStorage.getItem('sofas')) || [];
     const enrichedProductInLocalStorage = productInLocalStorage.map(product => ( {
@@ -96,7 +108,6 @@ const displayCart = async () => {
             cartItems.appendChild(cartItem);
 
             updateSums(enrichedProductInLocalStorage);
-
         }
     }
 }
@@ -114,19 +125,18 @@ const formErrorsLabel = {
 let errors = {};
 
 const initFocusOut = key => {
-     document.getElementById(key).addEventListener('focusout', (event) => {
-        console.log(key);
-        errors[key] = !regex[key](event.target?.value ?? '');
-        console.log(errors[key])
-        document.getElementById(`${key}ErrorMsg`).innerText = !errors[key]? '' : formErrorsLabel[key];
+     document.getElementById(key).addEventListener('focusout', (event) => { //when I leave current input 
+        errors[key] = !regex[key](event.target?.value ?? ''); //check if input value match with the regex
+        document.getElementById(`${key}ErrorMsg`).innerText = !errors[key]? '' : formErrorsLabel[key]; //if not, display error message
      })
 }
 
 Object.keys(formErrorsLabel).forEach(key => {
-    errors[key] = true;
+    errors[key] = true; //init errors object with true values for each key
     initFocusOut(key)
 });
 
+//When clicking on confirm, if all fields are correct, call the api to receive an order number.
 document.getElementById('order').addEventListener('click', async (event) => {
     event.preventDefault();
     if (Object.values(errors).every(value => value === false)) {

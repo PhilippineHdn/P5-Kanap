@@ -11,7 +11,7 @@ if (response.ok) {
 //remove a product from the localStorage
 const removeSofaInLocalStorage = (sofaId, sofaColor) => {
     const newCart = JSON.stringify(JSON.parse(localStorage.getItem('sofas')).filter(sofa => 
-        sofa.id !== sofaId && sofa.color !== sofaColor ));
+        !(sofa.id === sofaId && sofa.color === sofaColor) ));
     localStorage.setItem('sofas', newCart);
     return JSON.parse(newCart);
 }

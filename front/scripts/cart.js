@@ -127,12 +127,12 @@ let errors = {};
 const initFocusOut = key => {
      document.getElementById(key).addEventListener('focusout', (event) => { //when I leave current input 
         errors[key] = !regex[key](event.target?.value ?? ''); //check if input value match with the regex
-        document.getElementById(`${key}ErrorMsg`).innerText = !errors[key]? '' : formErrorsLabel[key]; //if not, display error message
+        document.getElementById(`${key}ErrorMsg`).innerText = errors[key] ? formErrorsLabel[key] : ''; //if not, display error message
      })
 }
 
 Object.keys(formErrorsLabel).forEach(key => {
-    errors[key] = true; //init errors object with true values for each key
+    errors[key] = false; //init errors object with false values for each key
     initFocusOut(key)
 });
 
@@ -159,5 +159,7 @@ document.getElementById('order').addEventListener('click', async (event) => {
         } catch (error) {
             console.log(error)
         }
-    } else if (!Object.values(errors).every(value => value === false)) { alert("Vérifiez que tous les champs du formulaire soient corrects.") }
+    } else if (Object.values(errors).some(value => value === true)) { 
+        alert("Vérifiez que tous les champs du formulaire soient corrects.") 
+    }
 })

@@ -35,7 +35,9 @@ const getArticle = async () => {
     if (response.ok) {
         product = await response.json()
     }
-    return product ? getPost(product) : null;
+    if (product) {
+        getPost(product)
+    }
 }
 
 getArticle();
@@ -47,12 +49,10 @@ document.getElementById('addToCart').addEventListener("click", () => {
     const quantityValue = document.getElementById('quantity').value;
 
     if(!colors.value || quantityValue == 0) {
-        alert('Please choose a color and a quantity');
+        alert('Pensez à renseigner la couleur et la quantité.');
     } else {
         const localStorageSofas = localStorage.getItem('sofas');
         const parsedLocalStorageSofas = localStorageSofas ? JSON.parse(localStorageSofas) : [];
-
-        document.getElementById('addToCart').style.color = "green";
 
         const foundIndex = parsedLocalStorageSofas.findIndex(sofa => sofa.id === idProduct && sofa.color === colors.value);
         if(foundIndex === -1) {
@@ -61,6 +61,8 @@ document.getElementById('addToCart').addEventListener("click", () => {
             parsedLocalStorageSofas[foundIndex].qty += Number(quantityValue);
         }
         localStorage.setItem('sofas', JSON.stringify(parsedLocalStorageSofas));
+
+        document.getElementById('addToCart').style.color = "green";
     }
 })
 

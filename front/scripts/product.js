@@ -50,6 +50,8 @@ document.getElementById('addToCart').addEventListener("click", () => {
 
     if(!colors.value || quantityValue == 0) {
         alert('Pensez à renseigner la couleur et la quantité.');
+    } else if (quantityValue < 0 || quantityValue > 100) {
+        alert('Veuillez choisir une quantité comprise entre 1 et 100.');
     } else {
         const localStorageSofas = localStorage.getItem('sofas');
         const parsedLocalStorageSofas = localStorageSofas ? JSON.parse(localStorageSofas) : [];
@@ -58,6 +60,10 @@ document.getElementById('addToCart').addEventListener("click", () => {
         if(foundIndex === -1) {
             parsedLocalStorageSofas.push({id:idProduct, color: colors.value, qty: Number(quantityValue)});
         } else {
+            if (parsedLocalStorageSofas[foundIndex].qty + Number(quantityValue) > 100) {
+                alert(`La quantité totale d\'un produit ne peut pas dépasser 100. Vous avez déjà ${parsedLocalStorageSofas[foundIndex].qty} canapés identiques.`);
+                return;
+            }
             parsedLocalStorageSofas[foundIndex].qty += Number(quantityValue);
         }
         localStorage.setItem('sofas', JSON.stringify(parsedLocalStorageSofas));

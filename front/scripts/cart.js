@@ -44,6 +44,12 @@ const onClickDeleteSofa = (event) => {
 
 //update the quantity of a product in the localStorage (with updateSofaInLocalStorage()) and update quantity and price line (with updateSums())
 const onChangeSofaQuantity = (event) => {
+    if (event.target.valueAsNumber > 100) {
+        event.target.valueAsNumber = 100
+    }
+    if (event.target.valueAsNumber <= 0) {
+        event.target.valueAsNumber = 1
+    }
     const cartItem = event.target.closest('.cart__item');
     updateSofaInLocalStorage({
         id : cartItem.dataset.id,
